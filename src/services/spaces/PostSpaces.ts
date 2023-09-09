@@ -1,18 +1,34 @@
+import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
 import {
 	APIGatewayProxyEvent,
 	APIGatewayProxyResult,
 	Context,
 } from 'aws-lambda';
+import { v4 } from 'uuid';
 
 export async function postSpaces(
 	event: APIGatewayProxyEvent,
+	DynamodbClient: DynamoDBClient,
 ): Promise<APIGatewayProxyResult> {
-	const response: APIGatewayProxyResult = {
-		statusCode: 200,
-		body: JSON.stringify({
-			message: `I am working from ${process.env.TABLE_NAME}`,
-		}),
-	};
+	const randomId = v4();
+	const item = JSON.parse(event.body);
 
-	return response;
+	const result = await DynamodbClient.send(
+		new PutItemCommand({
+			TableName: process.env.TABLE_NAME,
+			Item: {
+				id: {
+					S: randomId,
+				},
+				location: {
+					S: item.location,
+				},
+			},
+		}),
+	);
+
+	return {
+		statusCode: 201,
+		body: JSON.stringify(result),
+	};
 }
