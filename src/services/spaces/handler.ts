@@ -14,15 +14,22 @@ async function handler(
 ): Promise<APIGatewayProxyResult> {
 	let message: string;
 
-	switch (event.httpMethod) {
-		case 'GET':
-			message = 'GET';
-			break;
-		case 'POST':
-			const response = await postSpaces(event, DynamodbClient);
-			return response;
-		default:
-			break;
+	try {
+		switch (event.httpMethod) {
+			case 'GET':
+				message = 'GET';
+				break;
+			case 'POST':
+				const response = await postSpaces(event, DynamodbClient);
+				return response;
+			default:
+				break;
+		}
+	} catch (error) {
+		return {
+			statusCode: 500,
+			body: JSON.stringify(error.message),
+		};
 	}
 
 	const response: APIGatewayProxyResult = {
