@@ -29,6 +29,6 @@ export async function postSpaces(
 
 	return {
 		statusCode: 201,
-		body: JSON.stringify(result),
+		body: JSON.stringify({ id: randomId }),
 	};
 }

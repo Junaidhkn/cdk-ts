@@ -20,7 +20,7 @@ async function handler(
 				message = 'GET';
 				break;
 			case 'POST':
-				const response = await postSpaces(event, DynamodbClient);
+				const response = postSpaces(event, DynamodbClient);
 				return response;
 			default:
 				break;
