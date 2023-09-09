@@ -8,11 +8,22 @@ async function handler(
 	event: APIGatewayProxyEvent,
 	context: Context,
 ): Promise<APIGatewayProxyResult> {
+	let message: string;
+
+	switch (event.httpMethod) {
+		case 'GET':
+			message = 'GET';
+			break;
+		case 'POST':
+			message = 'POST';
+			break;
+		default:
+			break;
+	}
+
 	const response: APIGatewayProxyResult = {
 		statusCode: 200,
-		body: JSON.stringify({
-			message: `I am working from ${process.env.TABLE_NAME}`,
-		}),
+		body: JSON.stringify(message),
 	};
 
 	return response;
