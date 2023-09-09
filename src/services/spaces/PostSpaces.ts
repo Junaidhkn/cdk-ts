@@ -4,12 +4,12 @@ import { v4 } from 'uuid';
 
 export async function postSpaces(
 	event: APIGatewayProxyEvent,
-	DdbClient: DynamoDBClient,
+	ddbClient: DynamoDBClient,
 ): Promise<APIGatewayProxyResult> {
 	const randomId = v4();
 	const item = JSON.parse(event.body);
 
-	const result = await DdbClient.send(
+	const result = await ddbClient.send(
 		new PutItemCommand({
 			TableName: process.env.TABLE_NAME,
 			Item: {
@@ -22,6 +22,7 @@ export async function postSpaces(
 			},
 		}),
 	);
+	console.log(result);
 
 	return {
 		statusCode: 201,
