@@ -3,6 +3,7 @@ import {
 	GetItemCommand,
 	PutItemCommand,
 	ScanCommand,
+	UpdateItemCommand,
 } from '@aws-sdk/client-dynamodb';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
@@ -15,41 +16,36 @@ export async function updateSpace(
 		'id' in event.queryStringParameters &&
 		event.body
 	) {
+		const parsedBody = JSON.parse(event.body);
 		const spaceId = event.queryStringParameters['id'];
-		const item = JSON.parse(event.body);
+		const requestBodyKey = Object.keys(parsedBody)[0];
+		const requestBodyValue = parsedBody[requestBodyKey];
 
-		const getItemResponse = await ddbClient.send(
-			new GetItemCommand({
+		const updateResult = await ddbClient.send(
+			new UpdateItemCommand({
 				TableName: process.env.TABLE_NAME,
 				Key: {
 					id: { S: spaceId },
 				},
+				UpdateExpression: 'set #name = :new',
+				ExpressionAttributeValues: {
+					':new': { S: requestBodyValue },
+				},
+				ExpressionAttributeNames: {
+					'#name': requestBodyKey,
+				},
+				ReturnValues: 'UPDATED_NEW',
 			}),
 		);
-		if (getItemResponse.Item) {
-			const result = await ddbClient.send(
-				new PutItemCommand({
-					TableName: process.env.TABLE_NAME,
-					Item: {
-						id: {
-							S: spaceId,
-						},
-						location: {
-							S: item.location,
-						},
-					},
-				}),
-			);
-			console.log(result);
-			return {
-				statusCode: 200,
-				body: JSON.stringify(getItemResponse.Item),
-			};
-		} else {
-			return {
-				statusCode: 404,
-				body: JSON.stringify(`Space with Id: ${spaceId}not found`),
-			};
-		}
+
+		return {
+			statusCode: 200,
+			body: JSON.stringify(updateResult),
+		};
+	} else {
+		return {
+			statusCode: 404,
+			body: JSON.stringify('Updated operation failed'),
+		};
 	}
 }
