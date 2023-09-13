@@ -16,10 +16,9 @@ export async function postSpaces(
 			Item: marshall(item),
 		}),
 	);
-	console.log(result);
 
 	return {
 		statusCode: 201,
-		body: JSON.stringify({ id: randomId }),
+		body: JSON.stringify({ result }),
 	};
 }
