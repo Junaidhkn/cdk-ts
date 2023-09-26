@@ -17,8 +17,8 @@ export class AuthStack extends Stack {
 		this.userPool = new UserPool(this, 'SpaceUserPool', {
 			selfSignUpEnabled: true,
 			signInAliases: {
-				email: true,
 				username: true,
+				email: true,
 			},
 		});
 		new CfnOutput(this, 'SpaceUserPoolId', {
