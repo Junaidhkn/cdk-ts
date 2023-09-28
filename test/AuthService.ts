@@ -8,6 +8,7 @@ Amplify.configure({
 		region: awsRegion,
 		userPoolId: 'ap-south-1_DZ1I3LUBG',
 		userPoolWebClientId: '78778mm5kstcpc8a9krklv2dm8',
+		authenticationFlowType: 'USER_PASSWORD_AUTH',
 	},
 });
 
