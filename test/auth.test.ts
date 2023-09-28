@@ -5,3 +5,4 @@ async function testAuth() {
 	const result = await authService.login('junaid', 'amahhKHAN7786)');
 	console.log(result);
 }
+// testAuth();
